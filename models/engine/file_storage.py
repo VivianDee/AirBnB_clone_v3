@@ -74,19 +74,16 @@ class FileStorage:
         if cls not in classes.values():
             return None
 
-        new_dict = {}
-
         for key, value in self.__objects.items():
             if cls == value.__class__ or cls == value.__class__.__name__:
                 if id == key.split('.')[1]:
-                    new_dict[key] = value
-                    return new_dict
+                    return str(value)
 
         return None
 
     def count(self, cls=None):
         """Counts the number of objects of the given class in storage"""
-        if cls not in classes.values():
+        if cls and cls not in classes.values():
             return None
 
         all_objs = self.all(cls)
