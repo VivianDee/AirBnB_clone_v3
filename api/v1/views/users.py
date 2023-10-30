@@ -81,6 +81,7 @@ def update_user(user_id):
 
     for key, value in request_data.items():
         setattr(user_obj, key, value)
-    user_obj.save()
+    storage.save()
+    storage.reload()
 
     return jsonify(user_obj.to_dict()), 200
