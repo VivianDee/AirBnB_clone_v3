@@ -27,7 +27,7 @@ def retrieve_city(city_id):
     if not city_obj:
         abort(404)
 
-    return jsonify(city_obj)
+    return jsonify(city_obj.to_dict())
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
 def delete_city(city_id):
@@ -36,8 +36,6 @@ def delete_city(city_id):
 
     if not city_obj:
         abort(404)
-
-    print("for delete_city(check obj only) {}\n".format(city_obj))
 
     storage.delete(city_obj)
     storage.save()
