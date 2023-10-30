@@ -69,7 +69,7 @@ def update_city(city_id):
     if not city_obj:
         abort(404)
 
-    request_data = requet.get_json()
+    request_data = request.get_json()
     if not request_data:
         abort(400, 'Not a JSON')
 
@@ -77,8 +77,10 @@ def update_city(city_id):
         if key in request_data.keys():
             del request_data[key]
 
+    storage.reload()
+
     for key, value in request_data.items():
         setattr(city_obj, key, value)
-    city_obj.save()
+    storage.reload()
 
     return jsonify(city_obj.to_dict()), 200
