@@ -8,12 +8,15 @@ from models.state import State
 from models.place import Place
 from models.user import User
 
-@app_views.route('/cities/<city_id>/places', methods=['GET'], strict_slashes=False)
+
+@app_views.route('/cities/<city_id>/places', methods=['GET'],
+                 strict_slashes=False)
 def retrieve_places_in_city(city_id):
     """Retrieves the list of all Place objects of a City"""
     all_places = storage.all(Place).values()
 
-    places_in_city = [place.to_dict() for place in all_places if place.city_id == city_id]
+    places_in_city = [place.to_dict()
+                      for place in all_places if place.city_id == city_id]
 
     if len(places_in_city) == 0:
         abort(404)
@@ -22,7 +25,7 @@ def retrieve_places_in_city(city_id):
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def retrieve_place(place_id):
-    """Retrieves a Place object"""      
+    """Retrieves a Place object"""
     place_obj = storage.get(Place, place_id)
 
     if not place_obj:
@@ -30,7 +33,9 @@ def retrieve_place(place_id):
 
     return jsonify(place_obj.to_dict())
 
-@app_views.route('/places/<place_id>', methods=['DELETE'], strict_slashes=False)
+
+@app_views.route('/places/<place_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_place(place_id):
     """Deletes a Place object"""
     place_obj = storage.get(Place, place_id)
@@ -43,7 +48,9 @@ def delete_place(place_id):
 
     return jsonify({}), 200
 
-@app_views.route('/cities/<city_id>/places', methods=['POST'], strict_slashes=False)
+
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
+                 strict_slashes=False)
 def create_place(city_id):
     """Creates a Place object"""
     request_data = request.get_json()
@@ -60,10 +67,13 @@ def create_place(city_id):
     if not user_obj or not city_obj:
         abort(404)
 
-    new_instance = Place(name=request_data['name'], city_id=city_id, user_id=request_data['user_id'])
+    new_instance = Place(
+        name=request_data['name'], city_id=city_id,
+        user_id=request_data['user_id'])
     new_instance.save()
 
     return jsonify(new_instance.to_dict()), 201
+
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def update_place(place_id):

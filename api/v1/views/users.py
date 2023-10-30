@@ -24,13 +24,14 @@ def retrieve_all_users():
 def retrieve_user(user_id):
     """Retrieves a User object"""
     storage.save()
-    storage.reload() 
+    storage.reload()
     user_obj = storage.get(User, user_id)
 
     if not user_obj:
         abort(404)
 
     return jsonify(user_obj.to_dict())
+
 
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
 def delete_user(user_id):
@@ -45,6 +46,7 @@ def delete_user(user_id):
 
     return jsonify({}), 200
 
+
 @app_views.route('/users', methods=['POST'], strict_slashes=False)
 def create_user():
     """Creates a User object"""
@@ -56,10 +58,12 @@ def create_user():
     if 'password' not in request_data:
         abort(400, 'Missing password')
 
-    new_instance = User(email=request_data['email'], password=request_data['password'])
+    new_instance = User(
+        email=request_data['email'], password=request_data['password'])
     new_instance.save()
 
     return jsonify(new_instance.to_dict()), 201
+
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id):
