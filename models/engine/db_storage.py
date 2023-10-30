@@ -85,7 +85,7 @@ class DBStorage:
         for key, val in objs.items():
             obj_id = key.split('.')[1]
             if obj_id == id:
-                return (str(val))
+                return val
 
         return None
 
