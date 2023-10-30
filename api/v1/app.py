@@ -21,7 +21,7 @@ def teardown_app(error):
 def not_found(error):
     """Handles the 404 error on the app"""
     response = jsonify({"error": "Not found"})
-    return make_response(response, 404)
+    return response, 404
 
 
 if __name__ == '__main__':
