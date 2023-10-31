@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-'''Contains the amenities view for the API.'''
+'''amenities objects that handles all default RESTFul API actions'''
+
 from flask import request, jsonify
 from werkzeug.exceptions import NotFound, MethodNotAllowed, BadRequest
 
