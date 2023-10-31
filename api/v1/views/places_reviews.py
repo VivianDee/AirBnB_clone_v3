@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''Contains the places_reviews view for the API.'''
-from flask import jsonify, request
+from flask import request, jsonify
 from werkzeug.exceptions import NotFound, MethodNotAllowed, BadRequest
 
 from api.v1.views import app_views
@@ -9,9 +9,11 @@ from models.place import Place
 from models.review import Review
 from models.user import User
 
+review_methods = ['GET', 'DELETE', 'PUT']
+
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'])
-@app_views.route('/reviews/<review_id>', methods=['GET', 'DELETE', 'PUT'])
+@app_views.route('/reviews/<review_id>', methods=review_methods)
 def handle_reviews(place_id=None, review_id=None):
     '''The method handler for the reviews endpoint.
     '''
@@ -23,8 +25,7 @@ def handle_reviews(place_id=None, review_id=None):
     }
     if request.method in req_handlers:
         return req_handlers[request.method](place_id, review_id)
-    else:
-        raise MethodNotAllowed(list(req_handlers.keys()))
+    raise MethodNotAllowed(list(req_handlers.keys()))
 
 
 def get_reviews(place_id=None, review_id=None):
@@ -62,18 +63,18 @@ def add_review(place_id=None, review_id=None):
     place = storage.get(Place, place_id)
     if not place:
         raise NotFound()
-    data = request.get_json()
-    if type(data) is not dict:
-        raise BadRequest(description='Not a JSON')
-    if 'user_id' not in data:
+    res = request.get_json()
+    if 'user_id' not in res:
         raise BadRequest(description='Missing user_id')
-    user = storage.get(User, data['user_id'])
+    if type(res) is not dict:
+        raise BadRequest(description='Not a JSON')
+    user = storage.get(User, res['user_id'])
     if not user:
         raise NotFound()
-    if 'text' not in data:
+    if 'text' not in res:
         raise BadRequest(description='Missing text')
-    data['place_id'] = place_id
-    new_review = Review(**data)
+    res['place_id'] = place_id
+    new_review = Review(**res)
     new_review.save()
     return jsonify(new_review.to_dict()), 201
 
@@ -85,10 +86,10 @@ def update_review(place_id=None, review_id=None):
     if review_id:
         review = storage.get(Review, review_id)
         if review:
-            data = request.get_json()
-            if type(data) is not dict:
+            res = request.get_json()
+            if type(res) is not dict:
                 raise BadRequest(description='Not a JSON')
-            for key, value in data.items():
+            for key, value in res.items():
                 if key not in xkeys:
                     setattr(review, key, value)
             review.save()
