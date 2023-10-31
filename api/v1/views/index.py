@@ -29,11 +29,11 @@ def app_stats():
     users = storage.count(User)
 
     stats = {
-          "amenities": amenities,
-          "cities": cities,
-          "places": places,
-          "reviews": reviews,
-          "states": states,
-          "users": users
-        }
+        "amenities": amenities,
+        "cities": cities,
+        "places": places,
+        "reviews": reviews,
+        "states": states,
+        "users": users
+    }
     return jsonify(stats)
